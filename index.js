@@ -16,8 +16,28 @@ server.get("/", (req, res) => {
   res.json({ api: "running..." });
 });
 
+server.post("/api/users", (req, res) => {
+  const userInfo = req.body;
+
+  users.push(userInfo);
+
+  res.status(201).json(users);
+});
+
 server.get("/api/users", (req, res) => {
   res.json(users);
+});
+
+server.get("/api/users/:id", (req, res) => {
+  const id = req.params.id;
+
+  const user = users.find((user) => user.id == id);
+
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404).json({ message: "User not found" });
+  }
 });
 
 const port = 5000;
