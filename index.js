@@ -64,7 +64,7 @@ server.get("/api/users/:id", (req, res) => {
 server.delete("/api/users/:id", (req, res) => {
   const userInfo = req.body;
   const id = req.params.id;
-  const user = users.filter((user) => user.id !== id);
+  const user = users.find((user) => user.id === id);
 
   if (id != userInfo.id) {
     res
@@ -73,14 +73,15 @@ server.delete("/api/users/:id", (req, res) => {
   } else if (!user) {
     res.status(500).json({ message: "The user could not be removed." });
   } else {
-    res.json(user);
+    users = users.filter((user) => user.id !== id);
+    res.status(200).json(user);
   }
 });
 
 server.put("/api/users/:id", (req, res) => {
   const userInfo = req.body;
   const id = req.params.id;
-  const user = users.filter((user) => user.id !== id);
+  let index = users.findIndex((user) => user.id === id);
 
   if (id != userInfo.id) {
     res
@@ -91,9 +92,10 @@ server.put("/api/users/:id", (req, res) => {
       .status(400)
       .json({ message: "Please provide name and bio for the user." });
   } else if (!user) {
-    res.status(500).json({ message: "The user could not be removed." });
-  } else if (user) {
-    res.json(user);
+    res.status(500).json({ message: "The user could not be modified." });
+  } else if (index !== -1) {
+    users[index] = userInfo;
+    res.status(200).json(users[index]);
   }
 });
 
